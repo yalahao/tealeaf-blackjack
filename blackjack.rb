@@ -43,7 +43,7 @@ end
 
 def new_deck
   # deck = {CLUB => RANKS.dup, HEART => RANKS.dup, SPADE => RANKS.dup, DIAMOND => RANKS.dup}
-  deck = NO_CARD.dup
+  deck = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
   x = 0
   while x < NUMBER_OF_DECKS
     [CLUB, HEART, SPADE, DIAMOND].each do |suit|
@@ -57,8 +57,8 @@ end
 def new_game
 
   deck = new_deck
-  player_hand = NO_CARD.dup
-  dealer_hand = NO_CARD.dup
+  player_hand = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
+  dealer_hand = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 
   for i in 1..2 do
     hit(player_hand, deck)
