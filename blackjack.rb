@@ -34,24 +34,31 @@ HEART = "\u2661 ".encode('utf-8')
 SPADE = "\u2667 ".encode('utf-8')
 DIAMOND= "\u2662 ".encode('utf-8')
 RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
+NO_CARD = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
+NUMBER_OF_DECKS = 2
 
 def say(s)
   puts "--- #{s} ---"
 end
 
 def new_deck
-  deck = {CLUB => RANKS.dup, HEART => RANKS.dup, SPADE => RANKS.dup, DIAMOND => RANKS.dup}
-end
-
-def empty_hand
-  hand = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
+  # deck = {CLUB => RANKS.dup, HEART => RANKS.dup, SPADE => RANKS.dup, DIAMOND => RANKS.dup}
+  deck = NO_CARD.dup
+  x = 0
+  while x < NUMBER_OF_DECKS
+    [CLUB, HEART, SPADE, DIAMOND].each do |suit|
+      deck[suit].concat(RANKS)
+    end
+    x +=1
+  end
+  deck
 end
 
 def new_game
 
   deck = new_deck
-  player_hand = empty_hand
-  dealer_hand = empty_hand
+  player_hand = NO_CARD.dup
+  dealer_hand = NO_CARD.dup
 
   for i in 1..2 do
     hit(player_hand, deck)
