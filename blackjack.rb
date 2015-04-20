@@ -2,7 +2,7 @@ CLUB = "\u2664 ".encode('utf-8')
 HEART = "\u2661 ".encode('utf-8')
 SPADE = "\u2667 ".encode('utf-8')
 DIAMOND= "\u2662 ".encode('utf-8')
-RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
+RANKS = %w{A 2 3 4 5 6 7 8 9 J Q K}
 NUMBER_OF_DECKS = 2
 # EMPTY_HAND = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 
