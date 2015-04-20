@@ -22,19 +22,16 @@ Game
     Switch player
   Win
     Announce winner
-    Play_again?
+    play_again
     End game
 
 =end
-
-require 'pry'
 
 CLUB = "\u2664 ".encode('utf-8')
 HEART = "\u2661 ".encode('utf-8')
 SPADE = "\u2667 ".encode('utf-8')
 DIAMOND= "\u2662 ".encode('utf-8')
 RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
-NO_CARD = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 NUMBER_OF_DECKS = 2
 
 def say(s)
@@ -71,7 +68,7 @@ def new_game
   dealer_turn(dealer_hand, deck)
 
   check_winner(player_hand, dealer_hand)
-  play_again?
+  play_again
 
 end
 
@@ -90,31 +87,37 @@ end
 def sum(hand)
   s = 0
   [CLUB, HEART, SPADE, DIAMOND].each do |suit|
-    s += sub_sum(hand, suit)
+    hand[suit].each do |rank|
+      if rank == 'A'
+        s += 11
+      elsif ['J','Q','K'].include?(rank)
+        s += 10
+      else
+        s += rank.to_i
+      end
+    end
+  end
+  # Adjust for aces
+  if s > 21
+    [CLUB, HEART, SPADE, DIAMOND].each do |suit|
+      hand[suit].select{|r| r == "A"}.count.times do
+        s -= 10 if s > 21
+      end
+    end
   end
   return s
 end
 
-def sub_sum(hand, suit)
-  sub_s = 0
-  hand[suit].each do |rank|
-    if rank == 'A'
-      sub_s += 1
-    elsif ['J','Q','K'].include?(rank)
-      sub_s += 10
-    else
-      sub_s += rank.to_i
-    end
-  end
-  return sub_s
-end
 
 def player_turn(hand,deck)
   say "Your hand: #{hand}"
   say "Your hand sums up to #{sum(hand)}"
   if sum(hand) > 21
     say "You're busted!"
-    play_again?
+    play_again
+  elsif sum(hand) == 21
+    say "Blackjack! You won!"
+    play_again
   else
     say "Hit or Stay?"
     choice = gets.chomp.downcase
@@ -138,7 +141,9 @@ def dealer_turn(hand,deck)
     dealer_turn(hand,deck)
   elsif sum(hand) > 21
     say "Dealer is busted. You won!"
-    play_again?
+    play_again
+  elsif sum(hand) == 21
+    say "Dealer hit Blackjack. You lose.."
   end
 end
 
@@ -152,7 +157,7 @@ def check_winner(player_hand, dealer_hand)
   end
 end
 
-def play_again?
+def play_again
   say "Play again? (Y/N)"
   choice = gets.chomp.downcase
   if choice == 'y'
@@ -162,7 +167,7 @@ def play_again?
     abort
   else
     say "Invalid choice. Try again."
-    play_again?
+    play_again
   end
 end
 
