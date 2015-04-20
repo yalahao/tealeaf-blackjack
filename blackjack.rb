@@ -1,38 +1,10 @@
-# First attempt before watching solution video
-# Logic
-=begin
-
-Keep track of
-  Deck
-  Player_hand
-    Display(hand)
-  Dealer_hand
-
-Each card has
-  Rank
-  Suit
-
-Game
-  Initial_round
-    Deal 2 cards for each
-  Round
-    Choose Hit or Stay
-    Deal if Hit
-    Check score
-    Switch player
-  Win
-    Announce winner
-    play_again
-    End game
-
-=end
-
 CLUB = "\u2664 ".encode('utf-8')
 HEART = "\u2661 ".encode('utf-8')
 SPADE = "\u2667 ".encode('utf-8')
 DIAMOND= "\u2662 ".encode('utf-8')
 RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
 NUMBER_OF_DECKS = 2
+# EMPTY_HAND = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 
 def say(s)
   puts "--- #{s} ---"
@@ -40,6 +12,7 @@ end
 
 def new_deck
   # deck = {CLUB => RANKS.dup, HEART => RANKS.dup, SPADE => RANKS.dup, DIAMOND => RANKS.dup}
+  # deck = EMPTY_HAND.clone
   deck = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
   x = 0
   while x < NUMBER_OF_DECKS
