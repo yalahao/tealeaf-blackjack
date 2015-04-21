@@ -4,24 +4,39 @@ SPADE = "\u2667 ".encode('utf-8')
 DIAMOND= "\u2662 ".encode('utf-8')
 RANKS = %w{A 2 3 4 5 6 7 8 9 J Q K}
 NUMBER_OF_DECKS = 2
-# EMPTY_HAND = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 
 def say(s)
   puts "--- #{s} ---"
 end
 
 def new_deck
-  # deck = {CLUB => RANKS.dup, HEART => RANKS.dup, SPADE => RANKS.dup, DIAMOND => RANKS.dup}
-  # deck = EMPTY_HAND.clone
   deck = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
-  x = 0
-  while x < NUMBER_OF_DECKS
+  deck_number = 0
+  while deck_number < NUMBER_OF_DECKS
     [CLUB, HEART, SPADE, DIAMOND].each do |suit|
       deck[suit].concat(RANKS)
     end
-    x +=1
+    deck_number +=1
   end
   deck
+end
+
+def show(hand)
+  [CLUB, HEART, SPADE, DIAMOND].each do |suit|
+    say "#{suit}: #{hand[suit]}" if !hand[suit].empty?
+  end
+end
+
+def show_player(hand)
+  say "Your hand is:"
+  show(hand)
+  say "Your hand sums up to #{sum(hand)}"
+end
+
+def show_dealer(hand)
+  say "Dealer's hand is:"
+  show(hand)
+  say "Dealer's hand sums up to #{sum(hand)}"
 end
 
 def new_game
@@ -30,12 +45,11 @@ def new_game
   player_hand = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
   dealer_hand = {CLUB => [ ], HEART => [ ], SPADE => [ ], DIAMOND => [ ]}
 
-  for i in 1..2 do
-    hit(player_hand, deck)
-  end
-  for i in 1..2 do
-    hit(dealer_hand, deck)
-  end
+  2.times {hit(player_hand, deck)}
+  2.times {hit(dealer_hand, deck)}
+
+  show_player(player_hand)
+  show_dealer(dealer_hand)
 
   player_turn(player_hand, deck)
   dealer_turn(dealer_hand, deck)
@@ -45,7 +59,7 @@ def new_game
 
 end
 
-def hit(hand,deck)
+def hit(hand, deck)
   suit = deck.keys.sample
   rank = deck[suit].sample
   if rank
@@ -58,33 +72,31 @@ def hit(hand,deck)
 end
 
 def sum(hand)
-  s = 0
+  total = 0
   [CLUB, HEART, SPADE, DIAMOND].each do |suit|
     hand[suit].each do |rank|
       if rank == 'A'
-        s += 11
+        total += 11
       elsif ['J','Q','K'].include?(rank)
-        s += 10
+        total += 10
       else
-        s += rank.to_i
+        total += rank.to_i
       end
     end
   end
   # Adjust for aces
-  if s > 21
+  if total > 21
     [CLUB, HEART, SPADE, DIAMOND].each do |suit|
       hand[suit].select{|r| r == "A"}.count.times do
-        s -= 10 if s > 21
+        total -= 10 if s > 21
       end
     end
   end
-  return s
+  total
 end
 
 
-def player_turn(hand,deck)
-  say "Your hand: #{hand}"
-  say "Your hand sums up to #{sum(hand)}"
+def player_turn(hand, deck)
   if sum(hand) > 21
     say "You're busted!"
     play_again
@@ -96,6 +108,7 @@ def player_turn(hand,deck)
     choice = gets.chomp.downcase
     if choice == "hit"
       hit(hand,deck)
+      show_player(hand)
       player_turn(hand,deck)
     elsif choice == "stay"
       return
@@ -106,17 +119,19 @@ def player_turn(hand,deck)
   end
 end
 
-def dealer_turn(hand,deck)
-  say "Dealer's hand: #{hand}"
-  say "Dealer's hand sums up to #{sum(hand)}"
+def dealer_turn(hand, deck)
   if sum(hand) < 17
     hit(hand,deck)
+    say "Dealer hits"
+    show_dealer(hand)
     dealer_turn(hand,deck)
   elsif sum(hand) > 21
     say "Dealer is busted. You won!"
     play_again
   elsif sum(hand) == 21
     say "Dealer hit Blackjack. You lose.."
+  else
+    say "Dealer stays"
   end
 end
 
