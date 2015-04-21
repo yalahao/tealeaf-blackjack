@@ -23,7 +23,7 @@ end
 
 def show(hand)
   [CLUB, HEART, SPADE, DIAMOND].each do |suit|
-    say "#{suit}: #{hand[suit]}" if !hand[suit].empty?
+    say "#{suit}: #{hand[suit]}" unless hand[suit].empty?
   end
 end
 
@@ -97,10 +97,11 @@ end
 
 
 def player_turn(hand, deck)
-  if sum(hand) > 21
+  player_score = sum(hand)
+  if player_score > 21
     say "You're busted!"
     play_again
-  elsif sum(hand) == 21
+  elsif player_score == 21
     say "Blackjack! You won!"
     play_again
   else
@@ -120,15 +121,16 @@ def player_turn(hand, deck)
 end
 
 def dealer_turn(hand, deck)
-  if sum(hand) < 17
+  dealer_score = sum(hand)
+  if dealer_score < 17
     hit(hand,deck)
     say "Dealer hits"
     show_dealer(hand)
     dealer_turn(hand,deck)
-  elsif sum(hand) > 21
+  elsif dealer_score > 21
     say "Dealer is busted. You won!"
     play_again
-  elsif sum(hand) == 21
+  elsif dealer_score == 21
     say "Dealer hit Blackjack. You lose.."
   else
     say "Dealer stays"
